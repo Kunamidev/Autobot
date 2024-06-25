@@ -1,0 +1,18 @@
+modules = ["nodejs-20", "web", "nix"]
+hidden = [".config", "package-lock.json"]
+run = "node index.js"
+
+[nix]
+channel = "stable-23_11"
+
+[unitTest]
+language = "nodejs"
+
+[deployment]
+run = ["sh", "-c", "node index.js"]
+deploymentTarget = "gce"
+ignorePorts = false
+
+[[ports]]
+localPort = 3000
+externalPort = 80
