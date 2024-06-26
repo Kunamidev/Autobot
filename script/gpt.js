@@ -2,7 +2,7 @@ const { get } = require('axios');
 
 module.exports.config = {
   name: 'gpt',
-  credits: "cliff",
+  credits: "heru | rona",
   version: '1.0.0',
   role: 0,
   aliases: ["Gpt"],
