@@ -5,10 +5,10 @@ module.exports.config = {
     version: '1.0.0',
     role: 0,
     hasPrefix: false,
-    aliases: ['ai', 'bot'],
+    aliases: ['heru'],
     description: 'AI Command',
     usage: 'ai [query]',
-    credits: 'churchill',
+    credits: 'developer',
     cooldown: 3,
 };
 
