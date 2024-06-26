@@ -36,12 +36,12 @@ module.exports.run = async function({ api, event, args }) {
     const bulag = args.join(' ');
 
     if (!bulag) {
-        api.sendMessage('Please provide a question.', event.threadID, event.messageID);
+        api.sendMessage('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.', event.threadID, event.messageID);
         return;
     }
 
     // Send initial message and set "⌛" reaction
-    api.sendMessage('Searching, please wait...', event.threadID, (err, messageInfo) => {
+    api.sendMessage('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝....', event.threadID, (err, messageInfo) => {
         if (err) {
             console.error('Error sending initial message:', err);
             return;
