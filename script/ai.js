@@ -17,7 +17,7 @@ module.exports = {
             let prompt = args.join(' '), id = event.senderID;
             if(!prompt) return chat.reply("Please provide a question first.");
             const pending = await chat.reply("⏳ | Searching please wait.....");
-            //const pending1 = await chat.edit("✅ | Find answer!");
+            const pending1 = await chat.edit("✅ | Find answer!");
             try {
                 const res = await get(url+"/gpt4?prompt="+prompt+"&uid="+id);
                 const answer = res.data.gpt4;
