@@ -4,7 +4,7 @@ module.exports.config = {
     name: 'bibble',
     version: '1.0.0',
     role: 0,
-    credits: 'churchill',
+    credits: 'heru | rona',
     description: 'Get a random Bible verse.',
     hasPrefix: false,
     aliases: ['bibleverse', 'bibble'],
@@ -12,9 +12,9 @@ module.exports.config = {
     cooldown: 5,
 };
 
-module.exports.run = async function({ api, event }) {
+module.exports.run = async function({ api, event, chat }) {
     try {
-        api.sendMessage('⏱️ | Fetching a random Bible verse, please wait...', event.threadID);
+        const pending = await chat.reply('⏱️ | Fetching a random Bible verse, please wait...', event.threadID, event.messageID);
 
         const response = await axios.get('https://deku-rest-api-gadz.onrender.com/bible');
         const verse = response.data.verse;
@@ -22,9 +22,17 @@ module.exports.run = async function({ api, event }) {
 
         const message = `📖 ${verse}\n- ${reference}`;
 
-        api.sendMessage(message, event.threadID);
+        await chat.edit(message, pending.messageID);
+        await api.setMessageReaction('✅', event.messageID, (err) => {
+            if (err) console.error(err);
+        });
+
     } catch (error) {
         console.error('Error:', error);
-        api.sendMessage('An error occurred while fetching the Bible verse.', event.threadID);
+        await chat.edit('An error occurred while fetching the Bible verse.', pending.messageID);
+        await api.setMessageReaction('❌', event.messageID, (err) => {
+            if (err) console.error(err);
+        });
     }
 };
+    
