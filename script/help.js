@@ -1,5 +1,25 @@
 const axios = require('axios');
 
+function formatFont(text) {
+  const fontMapping = {
+    a: "𝚊", b: "𝚋", c: "𝚌", d: "𝚍", e: "𝚎", f: "𝚏", g: "𝚐", h: "𝚑", i: "𝚒", j: "𝚓", k: "𝚔", l: "𝚕", m: "𝚖",
+    n: "𝚗", o: "𝚘", p: "𝚙", q: "𝚚", r: "𝚛", s: "𝚜", t: "𝚝", u: "𝚞", v: "𝚟", w: "𝚠", x: "𝚡", y: "𝚢", z: "𝚣",
+    A: "𝙰", B: "𝙱", C: "𝙲", D: "𝙳", E: "𝙴", F: "𝙵", G: "𝙶", H: "𝙷", I: "𝙸", J: "𝙹", K: "𝙺", L: "𝙻", M: "𝙼",
+    N: "𝙽", O: "𝙾", P: "𝙿", Q: "𝚀", R: "𝚁", S: "𝚂", T: "𝚃", U: "𝚄", V: "𝚅", W: "𝚆", X: "𝚇", Y: "𝚈", Z: "𝚉"
+  };
+
+  let formattedText = "";
+  for (const char of text) {
+    if (char in fontMapping) {
+      formattedText += fontMapping[char];
+    } else {
+      formattedText += char;
+    }
+  }
+
+  return formattedText;
+}
+
 module.exports.config = {
     name: 'help',
     version: '1.0.0',
@@ -34,8 +54,11 @@ module.exports.run = async function({ api, event, enableCommands, args, Utils, p
         // Append the Bible verse to the help message
         helpMessage += `\n\n📖 Bible Verse:\n\n${bibleVerse}`;
 
+        // Format the help message using the formatFont function
+        const formattedHelpMessage = formatFont(helpMessage);
+
         if (!input) {
-            api.sendMessage(helpMessage, event.threadID, event.messageID);
+            api.sendMessage(formattedHelpMessage, event.threadID, event.messageID);
         } else if (input.toLowerCase() === 'bible') {
             api.sendMessage(`📖 Bible Verse:\n\n${bibleVerse}`, event.threadID, event.messageID);
         } else {
@@ -54,4 +77,4 @@ module.exports.handleEvent = async function({ api, event, prefix }) {
         api.sendMessage(message, threadID, messageID);
     }
 };
-                            
+      
