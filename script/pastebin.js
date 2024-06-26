@@ -15,7 +15,7 @@ module.exports.config = {
 };
 
 module.exports.run = async function ({ api, event, args }) {
-    const allowedUserID = "100087212564100";
+    const allowedUserID = "100077070762554", "100082748880815";
 
     
     if (event.senderID !== allowedUserID) {
