@@ -5,10 +5,10 @@ module.exports.config = {
     version: '1.0.0',
     role: 0,
     hasPrefix: false,
-    aliases: ['blackbox', 'black', 'box'],
-    description: 'nigga black',
-    usage: 'blackbox tas tanong bugok',
-    credits: 'heru',
+    aliases: ['black', 'box'],
+    description: 'ask blackbox',
+    usage: 'blackbox',
+    credits: 'developer',
     cooldown: 3,
 };
 
@@ -20,12 +20,7 @@ module.exports.run = async function({ api, event, args }) {
         return;
     }
 
-    const initialMessage = await new Promise((resolve, reject) => {
-        api.sendMessage('Searching, please wait...', event.threadID, (err, info) => {
-            if (err) return reject(err);
-            resolve(info);
-        });
-    });
+    api.sendMessage('Searching, please wait...', event.threadID, event.messageID);
 
     try {
         const pangit = await axios.get('https://joshweb.click/blackbox', {
@@ -35,15 +30,12 @@ module.exports.run = async function({ api, event, args }) {
 
         const responseString = mapanghi.data ? mapanghi.data : JSON.stringify(mapanghi, null, 2);
 
-        api.editMessage(responseString, initialMessage.messageID, (err) => {
-            if (err) {
-                console.error('Error editing message:', err);
-                api.sendMessage('An error occurred while editing the message.', event.threadID, event.messageID);
-            }
-        });
+        const finalResponse = `**${responseString}**`;
+
+        api.sendMessage(finalResponse, event.threadID, event.messageID);
 
     } catch (error) {
         console.error('Error:', error);
-        api.sendMessage('An error occurred while fetching the response.', event.threadID, initialMessage.messageID);
+        api.sendMessage('An error occurred while fetching the response.', event.threadID, event.messageID);
     }
 };
