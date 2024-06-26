@@ -17,21 +17,26 @@ module.exports.run = async function({ api, event, enableCommands, args, Utils, p
         const eventCommands = enableCommands[1].handleEvent;
         const commands = enableCommands[0].commands;
 
+        let helpMessage = `Command List:\n\n`;
+        commands.forEach((c, i) => {
+            helpMessage += `\t${i + 1}. ${prefix}${c}\n`;
+        });
+        helpMessage += `\nEvent List:\n\n`;
+        eventCommands.forEach((e, i) => {
+            helpMessage += `\t${i + 1}. ${prefix}${e}\n`;
+        });
+        helpMessage += `\nPage 1/1`;
+
+        // Fetch a random Bible verse
+        const bibleResponse = await axios.get('https://deku-rest-api-gadz.onrender.com/bible');
+        const bibleVerse = bibleResponse.data.verse;
+
+        // Append the Bible verse to the help message
+        helpMessage += `\n\n📖 Bible Verse:\n\n${bibleVerse}`;
+
         if (!input) {
-            let helpMessage = `Command List:\n\n`;
-            commands.forEach((c, i) => {
-                helpMessage += `\t${i + 1}. ${prefix}${c}\n`;
-            });
-            helpMessage += `\nEvent List:\n\n`;
-            eventCommands.forEach((e, i) => {
-                helpMessage += `\t${i + 1}. ${prefix}${e}\n`;
-            });
-            helpMessage += `\nPage 1/1`;
             api.sendMessage(helpMessage, event.threadID, event.messageID);
         } else if (input.toLowerCase() === 'bible') {
-            // Fetch a random Bible verse
-            const bibleResponse = await axios.get('https://deku-rest-api-gadz.onrender.com/bible');
-            const bibleVerse = bibleResponse.data.verse;
             api.sendMessage(`📖 Bible Verse:\n\n${bibleVerse}`, event.threadID, event.messageID);
         } else {
             api.sendMessage('Command not found.', event.threadID, event.messageID);
@@ -49,3 +54,4 @@ module.exports.handleEvent = async function({ api, event, prefix }) {
         api.sendMessage(message, threadID, messageID);
     }
 };
+                            
