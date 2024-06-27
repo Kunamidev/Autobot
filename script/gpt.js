@@ -55,23 +55,23 @@ module.exports.run = async function ({ api, event, args }) {
 
     try {
       const response = await get(`https://hercai.onrender.com/v3/hercai?question=${encodeURIComponent(question)}`);
-      const formattedResponse = formatFont(response.data.reply);
+      const formattedResponse = formatFont('🌺 𝐑𝐨𝐧𝐚 𝐆𝐩𝐭:\n\n' + response.data.reply);
 
       // Send the final response as a new message
       api.sendMessage(formattedResponse, event.threadID, (err) => {
         if (err) {
-          console.error('Error sending final response message:', err);
+          console.error(formatFont('Error sending final response message:', err);
         }
       });
 
       // Set "✅" reaction to the initial message
       api.setMessageReaction('✅', messageID, (err) => {
         if (err) {
-          console.error('Error setting reaction:', err);
+          console.error(formatFont('Error setting reaction:', err);
         }
       });
     } catch (error) {
-      api.sendMessage("An error occurred: " + error.message, event.threadID, event.messageID);
+      api.sendMessage(formatFont("An error occurred: " + error.message, event.threadID, event.messageID);
     }
   });
 };
