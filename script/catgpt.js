@@ -26,7 +26,7 @@ module.exports.config = {
     hasPermission: 0,
     credits: "heru",
     description: "Ask CatGPT",
-    usePrefix: true, // Change this to true if you want to use a prefix
+    usePrefix: false, // Change this to false if you don't want to use a prefix
     commandCategory: "CatGPT",
     cooldowns: 5,
 };
@@ -49,7 +49,7 @@ module.exports.run = async function ({ api, event, args }) {
         // Delay
         await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
 
-        const rona = `https://openapi-idk8.onrender.com/catgpt?q=${encodeURIComponent(prompt)}`;
+        const rona = `https://joshweb.click/api/catgpt?prompt=${encodeURIComponent(prompt)}`;
         const manilaTime = moment.tz('Asia/Manila');
         const formattedDateTime = manilaTime.format('MMMM D, YYYY h:mm A');
 
@@ -69,4 +69,4 @@ module.exports.run = async function ({ api, event, args }) {
         api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`), event.threadID, event.messageID);
     }
 };
-      
+              
