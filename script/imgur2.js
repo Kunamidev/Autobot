@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports.config = {
-	name: "imgur2",
+	name: "imgur",
 	version: "1.0.0",
 	role: 0,
 	hasPrefix: false,
