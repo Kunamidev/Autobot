@@ -73,7 +73,7 @@ module.exports.run = async function({ api, event, args }) {
                     const formattedResponse = formatFont(aiData);
 
                     // Send the combined response
-                    const finalResponse = `**${formattedResponse}**\n\nQuestion asked by: ${userName}`;
+                    const finalResponse = `**${formattedResponse}**\n\n𝚀𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚊𝚜𝚔 𝚋𝚢: ${userName}`;
                     api.sendMessage(finalResponse, event.threadID, (err, responseMessageInfo) => {
                         if (err) {
                             console.error('Error sending final response:', err);
