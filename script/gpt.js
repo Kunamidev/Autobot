@@ -22,7 +22,7 @@ function formatFont(text) {
 
 module.exports.config = {
   name: 'gpt',
-  credits: "heru | rona",
+  credits: "cliff",
   version: '1.0.0',
   role: 0,
   aliases: ["Gpt"],
@@ -33,48 +33,46 @@ module.exports.config = {
 
 module.exports.run = async function ({ api, event, args }) {
   const question = args.join(' ');
-  function sendMessage(msg) {
-    api.sendMessage(msg, event.threadID, event.messageID);
+
+  if (!question) {
+    api.sendMessage("Please provide a question.", event.threadID, event.messageID);
+    return;
   }
 
-  const url = "https://hercai.onrender.com/v3/hercai";
-
-  if (!question) return sendMessage("(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.");
-
   // Send initial message and set "⌛" reaction
-  api.sendMessage('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝....', event.threadID, async (err, messageInfo) => {
+  api.sendMessage('Searching, please wait...', event.threadID, async (err, messageInfo) => {
     if (err) {
       console.error('Error sending initial message:', err);
       return;
     }
 
-    const searchMessageID = messageInfo.messageID;
-    api.setMessageReaction('⌛', searchMessageID, (err) => {
+    const messageID = messageInfo.messageID;
+    api.setMessageReaction('⌛', messageID, (err) => {
       if (err) {
         console.error('Error setting reaction:', err);
       }
     });
 
     try {
-      const response = await get(`${url}?question=${encodeURIComponent(question)}`);
+      const response = await get(`https://hercai.onrender.com/v3/hercai?question=${encodeURIComponent(question)}`);
       const formattedResponse = formatFont(response.data.reply);
 
-      // Edit the initial message with the final response
-      api.editMessage(formattedResponse, searchMessageID, (err) => {
+      // Send the final response as a new message
+      api.sendMessage(formattedResponse, event.threadID, (err) => {
         if (err) {
-          console.error('Error editing message:', err);
+          console.error('Error sending final response message:', err);
         }
       });
 
       // Set "✅" reaction to the initial message
-      api.setMessageReaction('✅', searchMessageID, (err) => {
+      api.setMessageReaction('✅', messageID, (err) => {
         if (err) {
           console.error('Error setting reaction:', err);
         }
       });
     } catch (error) {
-      sendMessage("An error occurred: " + error.message);
+      api.sendMessage("An error occurred: " + error.message, event.threadID, event.messageID);
     }
   });
 };
-        
+      
