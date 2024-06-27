@@ -21,7 +21,7 @@ function formatFont(text) {
 }
 
 module.exports.config = {
-    name: 'bibble',
+    name: 'bible',
     version: '1.0.0',
     role: 0,
     credits: 'heru | rona',
