@@ -26,41 +26,53 @@ module.exports.config = {
     role: 0,
     hasPrefix: false,
     aliases: ['black', 'box'],
-    description: 'Ask blackbox Ai',
-    usage: 'blackbox [question]',
-    credits: 'heru',
+    description: 'ask blackbox',
+    usage: 'blackbox',
+    credits: 'developer',
     cooldown: 3,
 };
 
 module.exports.run = async function({ api, event, args, chat }) {
-    const rona = args.join(' ');
+    const bulag = args.join(' ');
 
-    if (!rona) {
-        api.sendMessage(formatFont('(❓) Please provide a question first.', event.threadID, event.messageID);
+    if (!bulag) {
+        api.sendMessage('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.', event.threadID, event.messageID);
         return;
     }
 
     const pendingMessage = await new Promise((resolve, reject) => {
-        api.sendMessage(formatFont('(⌛) Searching please wait...', event.threadID, (err, messageInfo) => {
+        api.sendMessage('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝....', event.threadID, (err, messageInfo) => {
             if (err) return reject(err);
             resolve(messageInfo);
         });
     });
 
     try {
-        const heru = await axios.get('https://joshweb.click/blackbox', {
-            params: { prompt: rona }
+        const pangit = await axios.get('https://joshweb.click/blackbox', {
+            params: { prompt: bulag }
         });
-        const love = heru.data;
+        const mapanghi = pangit.data;
 
-        const responseString = love.data ? love.data : JSON.stringify(love, null, 2);
+        const responseString = mapanghi.data ? mapanghi.data : JSON.stringify(mapanghi, null, 2);
         const formattedResponse = formatFont(responseString);
 
-        api.editMessage(formattedResponse, pendingMessage.messageID);
+        const finalResponse = `**${formattedResponse}**`;
+        await api.editMessage(finalResponse, pendingMessage.messageID);
+
+        api.setMessageReaction('✅', pendingMessage.messageID, (err) => {
+            if (err) {
+                console.error('Error setting reaction:', err);
+            }
+        });
 
     } catch (error) {
-        console.error(formatFont('Error:', error);
-        api.editMessage(formatFont('An error occurred while fetching the response.', pendingMessage.messageID);
+        console.error('Error:', error);
+        await api.editMessage('An error occurred while fetching the response.', pendingMessage.messageID);
+        api.setMessageReaction('❌', pendingMessage.messageID, (err) => {
+            if (err) {
+                console.error('Error setting reaction:', err);
+            }
+        });
     }
 };
-      
+    
