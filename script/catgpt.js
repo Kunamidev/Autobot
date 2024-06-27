@@ -26,8 +26,8 @@ module.exports.config = {
     hasPermission: 0,
     credits: "heru",
     description: "Ask CatGPT",
-    usePrefix: false,
-    commandCategory: "CatGPT [query]",
+    usePrefix: true, // Change this to true if you want to use a prefix
+    commandCategory: "CatGPT",
     cooldowns: 5,
 };
 
@@ -42,24 +42,24 @@ module.exports.run = async function ({ api, event, args }) {
         }
 
         if (!prompt) {
-            return api.sendMessage(formatFont('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.'), event.threadID, messageID);
+            return api.sendMessage(formatFont('(❓) Please provide a question or message to CatGPT.'), event.threadID, messageID);
         }
-        api.sendMessage(formatFont('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...'), event.threadID);
+        api.sendMessage(formatFont('(⌛) Searching response...'), event.threadID);
 
         // Delay
         await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
 
-        const catgpt_api = `https://openapi-idk8.onrender.com/catgpt?q=${encodeURIComponent(prompt)}`;
+        const rona = `https://openapi-idk8.onrender.com/catgpt?q=${encodeURIComponent(prompt)}`;
         const manilaTime = moment.tz('Asia/Manila');
         const formattedDateTime = manilaTime.format('MMMM D, YYYY h:mm A');
 
-        const response = await axios.get(catgpt_api);
+        const response = await axios.get(rona);
 
         if (response.data && response.data.response) {
             const generatedText = response.data.response;
 
             // Ai Answer Here
-            api.sendMessage(formatFont(`🎓 𝐂𝐚𝐭𝐆𝐏𝐓 𝐀𝐧𝐬𝐰𝐞𝐫\n━━━━━━━━━━━━━━━━\n\n🖋️ 𝙰𝚜𝚔: '${prompt}'\n\n𝗔𝗻𝘀𝘄𝗲𝗿: ${generatedText}\n\n🗓️ | ⏰ 𝙳𝚊𝚝𝚎 & 𝚃𝚒𝚖𝚎:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`), event.threadID, messageID);
+            api.sendMessage(formatFont(`🎓 CatGPT Answer\n━━━━━━━━━━━━━━━━\n\n🖋️ Query: '${prompt}'\n\nAnswer: ${generatedText}\n\n🗓️ | ⏰ Date & Time:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`), event.threadID, messageID);
         } else {
             //console.error('API response did not contain expected data:', response.data);
             api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`), event.threadID, messageID);
@@ -69,4 +69,4 @@ module.exports.run = async function ({ api, event, args }) {
         api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`), event.threadID, event.messageID);
     }
 };
-  
+      
