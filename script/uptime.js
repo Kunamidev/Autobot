@@ -19,16 +19,6 @@ function byte2mb(bytes) {
     return `${n.toFixed(n < 10 && l > 0 ? 1 : 0)} ${units[l]}`;
 }
 
-function getUptime(uptime) {
-    const days = Math.floor(uptime / (3600 * 24));
-    const hours = Math.floor((uptime % (3600 * 24)) / 3600);
-    const mins = Math.floor((uptime % 3600) / 60);
-    const seconds = Math.floor(uptime % 60);
-    const cores = `Cores: ${os.cpus().length}`;
-
-    return `Uptime: ${days} days, ${hours} hours, ${mins} minutes, and ${seconds} seconds`;
-}
-
 function formatFont(text) {
     const fontMapping = {
         a: "𝚊", b: "𝚋", c: "𝚌", d: "𝚍", e: "𝚎", f: "𝚏", g: "𝚐", h: "𝚑", i: "𝚒", j: "𝚓", k: "𝚔", l: "𝚕", m: "𝚖",
@@ -65,6 +55,11 @@ module.exports.run = async ({ api, event }) => {
     const timeStart = Date.now();
     const returnResult = `𝚁𝚘𝚗𝚊 𝙰𝚒 𝚑𝚊𝚜 𝚋𝚎𝚎𝚗 𝚠𝚘𝚛𝚔𝚒𝚗𝚐 𝚏𝚘𝚛 ${hours} hour(s) ${minutes} minute(s) ${seconds} second(s).\n\n❖ Cpu usage: ${usage.cpu.toFixed(1)}%\n❖ RAM usage: ${byte2mb(usage.memory)}\n❖ Cores: ${os.cpus().length}\n❖ Ping: ${Date.now() - timeStart}ms\n❖ Operating System Platform: ${osInfo.platform}\n❖ System CPU Architecture: ${osInfo.architecture}`;
 
-    return api.sendMessage(formatFont(returnResult), event.threadID, event.messageID);
+    const replyMessage = await api.sendMessage(formatFont(returnResult), event.threadID, event.messageID);
+
+    // Auto unsend the message after 6 seconds
+    setTimeout(() => {
+        api.deleteMessage(replyMessage.messageID);
+    }, 6000);
 };
 	    
