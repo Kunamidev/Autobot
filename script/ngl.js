@@ -34,7 +34,13 @@ module.exports.config = {
 module.exports.run = async ({ api, event, args }) => {
   try {
     if (args.length < 3) {
-      api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙸𝚗𝚜𝚞𝚏𝚏𝚒𝚌𝚒𝚎𝚗𝚝 𝚊𝚛𝚐𝚞𝚖𝚎𝚗𝚝𝚜. 𝚄𝚜𝚊𝚐𝚎: 𝚗𝚐𝚕𝚜𝚙𝚊𝚖 [𝚞𝚜𝚎𝚛𝚗𝚊𝚖𝚎] [𝚖𝚎𝚜𝚜𝚊𝚐𝚎] [𝚊𝚖𝚘𝚞𝚗𝚝]', event.threadID);
+      api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙸𝚗𝚜𝚞𝚏𝚏𝚒𝚌𝚒𝚎𝚗𝚝 𝚊𝚛𝚐𝚞𝚖𝚎𝚗𝚝𝚜. 𝚄𝚜𝚊𝚐𝚎: 𝚗𝚐𝚕𝚜𝚙𝚊𝚖 [𝚞𝚜𝚎𝚛𝚗𝚊𝚖𝚎] [𝚖𝚎𝚜𝚜𝚊𝚐𝚎] [𝚊𝚖𝚘𝚞𝚗𝚝]', event.threadID, (err, messageInfo) => {
+        if (!err) {
+          setTimeout(() => {
+            api.unsendMessage(messageInfo.messageID);
+          }, 6000);
+        }
+      });
       return;
     }
 
@@ -43,7 +49,13 @@ module.exports.run = async ({ api, event, args }) => {
     const spamCount = parseInt(args[args.length - 1]);
 
     if (isNaN(spamCount) || spamCount <= 0) {
-      api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙸𝚗𝚟𝚊𝚕𝚒𝚍 𝚊𝚖𝚘𝚞𝚗𝚝. 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚟𝚊𝚕𝚒𝚍 𝚙𝚘𝚜𝚒𝚝𝚒𝚟𝚎 𝚗𝚞𝚖𝚋𝚎𝚛.', event.threadID);
+      api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙸𝚗𝚟𝚊𝚕𝚒𝚍 𝚊𝚖𝚘𝚞𝚗𝚝. 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚟𝚊𝚕𝚒𝚍 𝚙𝚘𝚜𝚒𝚝𝚒𝚟𝚎 𝚗𝚞𝚖𝚋𝚎𝚛.', event.threadID, (err, messageInfo) => {
+        if (!err) {
+          setTimeout(() => {
+            api.unsendMessage(messageInfo.messageID);
+          }, 6000);
+        }
+      });
       return;
     }
 
@@ -62,13 +74,26 @@ module.exports.run = async ({ api, event, args }) => {
       console.log(`[ 𝙽𝙶𝙻 ] 𝙼𝚎𝚜𝚜𝚊𝚐𝚎 ${i + 1}: Status - ${response.status}`);
     }
 
-    api.sendMessage(`[ 𝙽𝙶𝙻 ] 𝚂𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢 𝚜𝚙𝚊𝚖𝚖𝚎𝚍 ${spamCount} 𝚝𝚒𝚖𝚎𝚜 𝚝𝚘 ${username}`, event.threadID);
+    api.sendMessage(`[ 𝙽𝙶𝙻 ] 𝚂𝚞𝚌𝚌𝚎𝚜𝚜𝚏𝚞𝚕𝚕𝚢 𝚜𝚙𝚊𝚖𝚖𝚎𝚍 ${spamCount} 𝚝𝚒𝚖𝚎𝚜 𝚝𝚘 ${username}`, event.threadID, (err, messageInfo) => {
+      if (!err) {
+        setTimeout(() => {
+          api.unsendMessage(messageInfo.messageID);
+        }, 6000);
+      }
+    });
   } catch (error) {
     console.error('[ 𝙽𝙶𝙻 ] 𝙴𝚛𝚛𝚘𝚛:', error);
-    api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙴𝚛𝚛𝚘𝚛: ' + error.message, event.threadID);
+    api.sendMessage('[ 𝙽𝙶𝙻 ] 𝙴𝚛𝚛𝚘𝚛: ' + error.message, event.threadID, (err, messageInfo) => {
+      if (!err) {
+        setTimeout(() => {
+          api.unsendMessage(messageInfo.messageID);
+        }, 6000);
+      }
+    });
   }
 };
 
 process.on('unhandledRejection', (error) => {
   console.error('Unhandled Promise Rejection:', error);
 });
+      
