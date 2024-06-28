@@ -58,15 +58,39 @@ module.exports.run = async function({ api, event, enableCommands, args, Utils, p
         const formattedHelpMessage = formatFont(helpMessage);
 
         if (!input) {
-            api.sendMessage(formattedHelpMessage, event.threadID, event.messageID);
+            api.sendMessage(formattedHelpMessage, event.threadID, (err, messageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(messageInfo.messageID);
+                    }, 6000);
+                }
+            });
         } else if (input.toLowerCase() === 'bible') {
-            api.sendMessage(`📖 Bible Verse:\n\n${bibleVerse}`, event.threadID, event.messageID);
+            api.sendMessage(`📖 Bible Verse:\n\n${bibleVerse}`, event.threadID, (err, messageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(messageInfo.messageID);
+                    }, 6000);
+                }
+            });
         } else {
-            api.sendMessage('Command not found.', event.threadID, event.messageID);
+            api.sendMessage('Command not found.', event.threadID, (err, messageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(messageInfo.messageID);
+                    }, 6000);
+                }
+            });
         }
     } catch (error) {
         console.log(error);
-        api.sendMessage('An error occurred while processing your request.', event.threadID, event.messageID);
+        api.sendMessage('An error occurred while processing your request.', event.threadID, (err, messageInfo) => {
+            if (!err) {
+                setTimeout(() => {
+                    api.unsendMessage(messageInfo.messageID);
+                }, 6000);
+            }
+        });
     }
 };
 
@@ -74,7 +98,13 @@ module.exports.handleEvent = async function({ api, event, prefix }) {
     const { threadID, messageID, body } = event;
     const message = prefix ? 'This is my prefix: ' + prefix : "Sorry, I don't have a prefix";
     if (body?.toLowerCase().startsWith('prefix')) {
-        api.sendMessage(message, threadID, messageID);
+        api.sendMessage(message, threadID, (err, messageInfo) => {
+            if (!err) {
+                setTimeout(() => {
+                    api.unsendMessage(messageInfo.messageID);
+                }, 6000);
+            }
+        });
     }
 };
-      
+  
