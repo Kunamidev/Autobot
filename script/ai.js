@@ -36,23 +36,28 @@ module.exports.run = async function({ api, event, args }) {
     const query = args.join(' ');
 
     if (!query) {
-        api.sendMessage('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.', event.threadID, event.messageID);
+        api.sendMessage('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.', event.threadID, (err, messageInfo) => {
+            if (err) {
+                console.error('Error sending initial message:', err);
+                return;
+            }
+            setTimeout(() => {
+                api.unsendMessage(messageInfo.messageID);
+            }, 6000);
+        });
         return;
     }
 
-    // Send initial message and set "⌛" reaction
     api.sendMessage('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝....', event.threadID, (err, messageInfo) => {
         if (err) {
-            console.error(formatFont('Error sending initial message:', err);
+            console.error('Error sending initial message:', err);
             return;
         }
 
         const messageID = messageInfo.messageID;
-        api.setMessageReaction('⌛', messageID, (err) => {
-            if (err) {
-                console.error(formatFont('Error setting reaction:', err);
-            }
-        });
+        setTimeout(() => {
+            api.unsendMessage(messageID);
+        }, 6000);
 
         try {
             axios.get('https://markdevs-api.onrender.com/gpt4', {
@@ -69,34 +74,28 @@ module.exports.run = async function({ api, event, args }) {
 
                     const userName = result[event.senderID].name;
 
-                    // Format the AI response text using the formatFont function
                     const formattedResponse = formatFont(aiData);
 
-                    // Send the combined response
-                    const finalResponse = `**${formattedResponse}**\n\n𝚀𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚊𝚜𝚔 𝚋𝚢: ${userName}`;
+                    const finalResponse = `🌺 ${formattedResponse} \n\n𝚀𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚊𝚜𝚔 𝚋𝚢: ${userName}`;
                     api.sendMessage(finalResponse, event.threadID, (err, responseMessageInfo) => {
                         if (err) {
-                            console.error(formatFont('Error sending final response:', err);
+                            console.error('Error sending final response:', err);
                             return;
                         }
 
-                        // Set "✅" reaction to the initial message
-                        api.setMessageReaction('✅', messageID, (err) => {
-                            if (err) {
-                                console.error(formatFonr('Error setting reaction:', err);
-                            }
-                        });
+                        setTimeout(() => {
+                            api.unsendMessage(responseMessageInfo.messageID);
+                        }, 6000);
                     });
                 });
             }).catch(error => {
-                console.error(formatFont('Error:', error);
-                api.sendMessage(formtFont('An error occurred while fetching the response.', event.threadID, event.messageID);
+                console.error('Error:', error);
+                api.sendMessage('An error occurred while fetching the response.', event.threadID, event.messageID);
             });
         } catch (error) {
-            console.error(formatFont('Error:', error);
-            api.sendMessage(formatFont('An error occurred while fetching the response.', event.threadID, event.messageID);
+            console.error('Error:', error);
+            api.sendMessage('An error occurred while fetching the response.', event.threadID, event.messageID);
         }
     });
 };
-
-                        
+  
