@@ -42,12 +42,23 @@ module.exports.run = async function ({ api, event, args }) {
         }
 
         if (!prompt) {
-            return api.sendMessage(formatFont('(❓) Please provide a question first.'), event.threadID, messageID);
+            api.sendMessage(formatFont('(❓) Please provide a question first.'), event.threadID, (err, messageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(messageInfo.messageID);
+                    }, 6000);
+                }
+            });
+            return;
         }
-        api.sendMessage(formatFont('(⌛) Searching please wait...'), event.threadID);
 
-        // Delay
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
+        api.sendMessage(formatFont('(⌛) Searching please wait...'), event.threadID, (err, messageInfo) => {
+            if (!err) {
+                setTimeout(() => {
+                    api.unsendMessage(messageInfo.messageID);
+                }, 6000);
+            }
+        });
 
         const gpt4_api = `https://gpt4withcustommodel.onrender.com/gpt?query=${encodeURIComponent(prompt)}&model=gpt-4-32k-0314`;
         const manilaTime = moment.tz('Asia/Manila');
@@ -58,15 +69,30 @@ module.exports.run = async function ({ api, event, args }) {
         if (response.data && response.data.response) {
             const generatedText = response.data.response;
 
-            // Ai Answer Here
-            api.sendMessage(formatFont(`🎓 Ai2 Answer\n━━━━━━━━━━━━━━━━\n\n🖋️ Ask: '${prompt}'\n\nAnswer: ${generatedText}\n\n🗓️ | ⏰ 𝙳𝚊𝚝𝚎 & 𝚃𝚒𝚖𝚎:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`), event.threadID, messageID);
+            api.sendMessage(formatFont(`🎓 Ai2 Answer\n━━━━━━━━━━━━━━━━\n\n🖋️ Ask: '${prompt}'\n\nAnswer: ${generatedText}\n\n🗓️ | ⏰ 𝙳𝚊𝚝𝚎 & 𝚃𝚒𝚖𝚎:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`), event.threadID, (err, responseMessageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(responseMessageInfo.messageID);
+                    }, 6000);
+                }
+            });
         } else {
-            //console.error('API response did not contain expected data:', response.data);
-            api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`), event.threadID, messageID);
+            api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`), event.threadID, (err, errorMessageInfo) => {
+                if (!err) {
+                    setTimeout(() => {
+                        api.unsendMessage(errorMessageInfo.messageID);
+                    }, 6000);
+                }
+            });
         }
     } catch (error) {
-        //console.error('Error:', error);
-        api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`), event.threadID, event.messageID);
+        api.sendMessage(formatFont(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`), event.threadID, (err, errorMessageInfo) => {
+            if (!err) {
+                setTimeout(() => {
+                    api.unsendMessage(errorMessageInfo.messageID);
+                }, 6000);
+            }
+        });
     }
 };
   
