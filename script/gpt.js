@@ -35,11 +35,18 @@ module.exports.run = async function ({ api, event, args }) {
   const question = args.join(' ');
 
   if (!question) {
-    api.sendMessage("(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.", event.threadID, event.messageID);
+    api.sendMessage("(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚚𝚞𝚎𝚜𝚝𝚒𝚘𝚗 𝚏𝚒𝚛𝚜𝚝.", event.threadID, (err, messageInfo) => {
+      if (err) {
+        console.error('Error sending initial message:', err);
+        return;
+      }
+      setTimeout(() => {
+        api.unsendMessage(messageInfo.messageID);
+      }, 6000);
+    });
     return;
   }
 
-  // Send initial message and set "⌛" reaction
   api.sendMessage('(⌛) 𝚂𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...', event.threadID, async (err, messageInfo) => {
     if (err) {
       console.error('Error sending initial message:', err);
@@ -47,32 +54,33 @@ module.exports.run = async function ({ api, event, args }) {
     }
 
     const messageID = messageInfo.messageID;
-    api.setMessageReaction('⌛', messageID, (err) => {
-      if (err) {
-        console.error('Error setting reaction:', err);
-      }
-    });
+    setTimeout(() => {
+      api.unsendMessage(messageID);
+    }, 6000);
 
     try {
       const response = await get(`https://hercai.onrender.com/v3/hercai?question=${encodeURIComponent(question)}`);
       const formattedResponse = formatFont('🌺 𝐑𝐨𝐧𝐚 𝐆𝐩𝐭:\n\n' + response.data.reply);
 
       // Send the final response as a new message
-      api.sendMessage(formattedResponse, event.threadID, (err) => {
+      api.sendMessage(formattedResponse, event.threadID, (err, responseMessageInfo) => {
         if (err) {
-          console.error(formatFont('Error sending final response message:', err);
+          console.error('Error sending final response message:', err);
+          return;
         }
-      });
-
-      // Set "✅" reaction to the initial message
-      api.setMessageReaction('✅', messageID, (err) => {
-        if (err) {
-          console.error(formatFont('Error setting reaction:', err);
-        }
+        setTimeout(() => {
+          api.unsendMessage(responseMessageInfo.messageID);
+        }, 6000);
       });
     } catch (error) {
-      api.sendMessage(formatFont("An error occurred: " + error.message, event.threadID, event.messageID);
+      api.sendMessage(formatFont("An error occurred: " + error.message), event.threadID, (err, errorMessageInfo) => {
+        if (!err) {
+          setTimeout(() => {
+            api.unsendMessage(errorMessageInfo.messageID);
+          }, 6000);
+        }
+      });
     }
   });
 };
-      
+  
