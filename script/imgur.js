@@ -5,7 +5,7 @@ module.exports.config = {
 	version: "1.0.0",
 	role: 0,
 	hasPrefix: false,
-	credits: "Eugene Aguilar",
+	credits: "heru",
 	description: "upload to imgur",
 	usages: "imgur reply image,video,png,jpg",
 	cooldown: 0,
@@ -49,5 +49,15 @@ module.exports.run = async function ({ api, event }) {
 		}
 	}
 
-	return api.sendMessage(`Uploaded successfully ${array.length} image(s)\nFailed to upload: ${event.messageReply.attachments.length - array.length}\nImage link: \n${array.join("\n")}`, event.threadID, event.messageID);
+	const replyMessage = await api.sendMessage(
+		`Uploaded successfully ${array.length} image(s)\nFailed to upload: ${event.messageReply.attachments.length - array.length}\nImage link: \n${array.join("\n")}`, 
+		event.threadID, 
+		event.messageID
+	);
+
+	// Auto unsend the message after 6 seconds
+	setTimeout(() => {
+		api.deleteMessage(replyMessage.messageID);
+	}, 6000);
 };
+		
