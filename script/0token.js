@@ -19,30 +19,27 @@ module.exports.run = async function ({ api, event, args }) {
   
   // Check if username and password are provided
   if (!username || !password) {
-    return api.sendMessage("Usage: tokengetter [username] [password]", event.threadID, event.messageID);
+    return api.sendMessage("Invalid usage: token [username] [password]", event.threadID, event.messageID);
   }
 
-  // Send a message indicating the process is starting
-  const pendingMessage = await api.sendMessage("Fetching token, please wait...", event.threadID, event.messageID);
+  api.sendMessage("Fetching token, please wait...", event.threadID, async (err, info) => {
+    if (err) return console.error(err);
 
-  try {
-    const response = await axios.get(`https://markdevs-api.onrender.com/fb/token?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-    if (response.data && response.data.token) {
-      const token = response.data.token;
-      api.sendMessage(`Token:\n${token}`, event.threadID, event.messageID, (err, info) => {
-        if (!err) {
-          setTimeout(() => api.unsendMessage(info.messageID), 6000);
-        }
-      });
-    } else {
-      api.sendMessage("Failed to fetch token. Please check your credentials.", event.threadID, event.messageID);
+    try {
+      const response = await axios.get(`https://markdevs-api.onrender.com/fb/token?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+      if (response.data && response.data.token) {
+        const token = response.data.token;
+        api.sendMessage(`Token:\n${token}`, event.threadID, event.messageID, (err, info) => {
+          if (!err) {
+            setTimeout(() => api.unsendMessage(info.messageID), 6000);
+          }
+        });
+      } else {
+        api.sendMessage("Failed to fetch token. Please check your credentials.", event.threadID, event.messageID);
+      }
+    } catch (error) {
+      api.sendMessage("An error occurred while fetching the token.", event.threadID, event.messageID);
+      console.error(error);
     }
-  } catch (error) {
-    api.sendMessage("An error occurred while fetching the token.", event.threadID, event.messageID);
-    console.error(error);
-  } finally {
-    // Remove the "Fetching token" message
-    api.unsendMessage(pendingMessage.messageID);
-  }
+  });
 };
-  
