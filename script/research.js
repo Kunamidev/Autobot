@@ -37,7 +37,7 @@ module.exports.run = async function ({ api, event, args }) {
   const query = args.join(' ');
 
   if (!query) {
-    api.sendMessage('Please provide a search query for Arxiv.', threadID, (err, messageInfo) => {
+    api.sendMessage('(❓) 𝙿𝚕𝚎𝚊𝚜𝚎 𝚙𝚛𝚘𝚟𝚒𝚍𝚎 𝚊 𝚜𝚎𝚊𝚛𝚌𝚑 𝚚𝚞𝚎𝚛𝚢 𝚏𝚘𝚛 𝙰𝚛𝚡𝚒𝚟.', threadID, (err, messageInfo) => {
       if (!err) {
         setTimeout(() => {
           api.unsendMessage(messageInfo.messageID);
