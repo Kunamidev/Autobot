@@ -6,7 +6,7 @@ module.exports.config = {
   role: 0,
   hasPrefix: false,
   credits: "heru",
-  aliases: ["appstate"], // Fixed spelling
+  aliases: ["state"],
   description: "get appstate",
   usage: "appstate [email] [password]",
   commandCategory: "tools",
@@ -16,14 +16,14 @@ module.exports.config = {
 module.exports.run = async function ({ api, event, args }) {
   const email = args[0];
   const password = args[1];
+
   
-  // Check if email and password are provided
   if (!email || !password) {
-    return api.sendMessage("Usage: appstate [email] [password]", event.threadID, event.messageID);
+    return api.sendMessage("Invalid usage: appstate [email/uid] [password]", event.threadID, event.messageID);
   }
 
   try {
-    const response = await axios.get(`https://markdevs-api.onrender.com/api/appstate?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+    const response = await axios.get(`https://appstate-getter.replit.app/appstate?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
     const appstate = response.data.appstate;
     api.sendMessage(`Appstate:\n${appstate}`, event.threadID, event.messageID);
   } catch (error) {
