@@ -19,8 +19,11 @@ module.exports.run = async function ({ api, event, args }) {
   
   // Check if username and password are provided
   if (!username || !password) {
-    return api.sendMessage("Invalid usage: token [username] [password]", event.threadID, event.messageID);
+    return api.sendMessage("Usage: tokengetter [username] [password]", event.threadID, event.messageID);
   }
+
+  // Send a message indicating the process is starting
+  const pendingMessage = await api.sendMessage("Fetching token, please wait...", event.threadID, event.messageID);
 
   try {
     const response = await axios.get(`https://markdevs-api.onrender.com/fb/token?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
@@ -37,6 +40,9 @@ module.exports.run = async function ({ api, event, args }) {
   } catch (error) {
     api.sendMessage("An error occurred while fetching the token.", event.threadID, event.messageID);
     console.error(error);
+  } finally {
+    // Remove the "Fetching token" message
+    api.unsendMessage(pendingMessage.messageID);
   }
 };
-                     
+  
