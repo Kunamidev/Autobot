@@ -6,7 +6,7 @@ module.exports.config = {
   role: 0,
   hasPrefix: false,
   credits: "heru",
-  aliases: ["token"],
+  aliases: ["get", "token"],
   description: "Get token using username and password",
   usage: "tokengetter [username] [password]",
   commandCategory: "tools",
@@ -19,15 +19,24 @@ module.exports.run = async function ({ api, event, args }) {
   
   // Check if username and password are provided
   if (!username || !password) {
-    return api.sendMessage("Usage: tokengetter [username] [password]", event.threadID, event.messageID);
+    return api.sendMessage("Invalid usage: token [username] [password]", event.threadID, event.messageID);
   }
 
   try {
     const response = await axios.get(`https://markdevs-api.onrender.com/fb/token?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-    const token = response.data.token;
-    api.sendMessage(`Token:\n${token}`, event.threadID, event.messageID);
+    if (response.data && response.data.token) {
+      const token = response.data.token;
+      api.sendMessage(`Token:\n${token}`, event.threadID, event.messageID, (err, info) => {
+        if (!err) {
+          setTimeout(() => api.unsendMessage(info.messageID), 6000);
+        }
+      });
+    } else {
+      api.sendMessage("Failed to fetch token. Please check your credentials.", event.threadID, event.messageID);
+    }
   } catch (error) {
     api.sendMessage("An error occurred while fetching the token.", event.threadID, event.messageID);
     console.error(error);
   }
 };
+                     
