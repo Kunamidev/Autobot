@@ -47,12 +47,12 @@ module.exports.run = async function({ api, event, enableCommands, args, Utils, p
         });
         helpMessage += `\nPage 1/1`;
 
-        // Fetch a random Bible verse
-        const bibleResponse = await axios.get('https://deku-rest-api-gadz.onrender.com/bible');
-        const bibleVerse = bibleResponse.data.verse;
+        // Fetch a random cat fact
+        const catFactResponse = await axios.get('https://catfact.ninja/fact');
+        const catFact = catFactResponse.data.fact;
 
-        // Append the Bible verse to the help message
-        helpMessage += `\n\n📖 Bible Verse:\n\n${bibleVerse}`;
+        // Append the cat fact to the help message
+        helpMessage += `\n\n🐱 Cat Fact:\n\n${catFact}`;
 
         // Format the help message using the formatFont function
         const formattedHelpMessage = formatFont(helpMessage);
@@ -65,8 +65,8 @@ module.exports.run = async function({ api, event, enableCommands, args, Utils, p
                     }, 6000);
                 }
             });
-        } else if (input.toLowerCase() === 'bible') {
-            api.sendMessage(`📖 Bible Verse:\n\n${bibleVerse}`, event.threadID, (err, messageInfo) => {
+        } else if (input.toLowerCase() === 'cat') {
+            api.sendMessage(`🐱 Cat Fact:\n\n${catFact}`, event.threadID, (err, messageInfo) => {
                 if (!err) {
                     setTimeout(() => {
                         api.unsendMessage(messageInfo.messageID);
